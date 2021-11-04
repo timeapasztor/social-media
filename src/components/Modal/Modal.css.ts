@@ -23,15 +23,19 @@ export const ModalContainer = styled.div`
   color: ${theme.palette.white.main};
   margin: 0 auto;
   width: 40%;
+  ${fontSizesCSS.fs32lh40ls0};
   padding: 80px 112px;
     @include xxl {
       padding: 60px 84px;
+      ${fontSizesCSS.fs32lh40ls0};
     }
     @include xl {
       padding: 50px 70px;
+      ${fontSizesCSS.fs24lh32ls25};
     }
     @include lg {
       padding: 40px 56px;
+      ${fontSizesCSS.fs16lh24ls44};
     }
 `;
 
@@ -52,17 +56,21 @@ export const ModalContent = styled.div`
   width: 100%;
   margin-top: 32px;
   height: 144px;
+  ${fontSizesCSS.fs16lh24ls44};
     @include xxl {
       margin-top: 24px;
       height: 108px;
+      ${fontSizesCSS.fs16lh24ls44};
     }
     @include xl {
       margin-top: 20px;
       height: 90px;
+      ${fontSizesCSS.fs14lh20ls4};
     }
     @include lg {
       margin-top: 16px;
       height: 72px;
+      ${fontSizesCSS.fs12lh16ls4};
     }
 `;
 

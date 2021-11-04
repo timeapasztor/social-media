@@ -3,17 +3,16 @@ import {NewsCard} from "../Cards/NewsCard/NewsCards";
 import Api, {Url} from "../../api/Api";
 import {ErrorPropType, PostPropType, UserPostPropType} from "../../types/Post";
 import Modal from "../Modal/Modal";
-import { Link } from "react-router-dom";
-import { ModalEntry } from "../Modal/Modal.css";
-import { FeedWrapper } from "./Feed.css";
-import { ModalButtonWrapper } from "../Modal/Modal.css";
+import {Link} from "react-router-dom";
+import {ModalButtonWrapper, ModalEntry} from "../Modal/Modal.css";
+import {FeedWrapper} from "./Feed.css";
 
 const Feed: React.FC = () => {
     const [posts, setPosts] = useState<Array<any>>([]);
     const [showInput, setShowInput] = useState(false);
     const [newPost, setNewPost] = useState<PostPropType>(
         {
-            user_id: 1,
+            userId: 1,
             title: "",
             body: ""
         }
@@ -28,7 +27,11 @@ const Feed: React.FC = () => {
     }, []);
 
     const loadNews = async () => {
-        let postList = await Api.fetch(Url.posts);
+        let postList = await Api.fetchPosts();
+        await loadDetails(postList)
+    }
+
+    const loadDetails = async (postList: Array<any>) => {
         let list = postList.map(async (item: UserPostPropType) => {
             await loadUser(item);
             return await loadComments(item);
@@ -38,14 +41,13 @@ const Feed: React.FC = () => {
     };
 
     const loadUser = async (item: UserPostPropType) => {
-        let username = await Api.fetch(`${Url.user}/${item.userId}`);
+        let username = await Api.fetchUserId(item.userId);
         item["username"] = username.username;
         return item;
     }
 
     const loadComments = async (item: UserPostPropType) => {
-        let comments = await Api.fetch(`${Url.posts}/${item.id}/comments`);
-        item["comments"] = comments;
+        item["comments"] = await Api.fetchComments(item.id);
         return item;
     }
 
@@ -107,21 +109,29 @@ const Feed: React.FC = () => {
         let validation = checkValidations();
         if (!validation) return;
 
-        await Api.post(Url.post, newPost);
+        setShowInput(false);
+        await Api.postPosts(Url.post, newPost);
         setPosts((posts) => {
             return [
                 newPost,
                 ...posts,
             ]
         })
-        setShowInput(false);
+
+        await loadDetails([newPost, ...posts]);
+        setNewPost({
+            userId: 1,
+            title: "",
+            body: ""
+        })
+        setInputErrors({title: "", body: ""});
     }
 
     const addNewPost = () => {
         if (!showInput) return;
 
         return (
-            <Modal title="Add new post" style={{fontSize: '32px'}}>
+            <Modal title="Add new post">
                 <ModalEntry>
                     <input
                         className="input-title"
@@ -152,7 +162,7 @@ const Feed: React.FC = () => {
                             evt.preventDefault();
                             setShowInput(false);
                             setNewPost({
-                                user_id: 1,
+                                userId: 1,
                                 title: "",
                                 body: ""
                             })
@@ -188,7 +198,7 @@ const Feed: React.FC = () => {
         <FeedWrapper>
             {addNewPost()}
             <button onClick={() => setShowInput(true)}>Add new post</button>
-            {posts.length > 0 && renderPosts()}
+            {posts.length > 0 ? renderPosts() : <div className="loading-spinner"/>}
         </FeedWrapper>
     );
 };

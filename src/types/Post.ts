@@ -8,7 +8,7 @@ export type UserPostPropType = {
 }
 
 export type PostPropType = {
-    user_id: any;
+    userId: any;
     title: string;
     body: string;
 }

@@ -3,9 +3,10 @@ import {
     UserCardWrapper,
     UserCardHeader,
     UserCardTitle,
+    UserGallery,
 } from './UserCard.css';
 import {UserPropType} from "../../../types/User";
-import Api, {Url} from "../../../api/Api";
+import Api from "../../../api/Api";
 import {PhotoPropType} from "../../../types/Photo";
 
 export const UserCard: React.FC <UserPropType> = ({user_id, name, address}) => {
@@ -17,7 +18,7 @@ export const UserCard: React.FC <UserPropType> = ({user_id, name, address}) => {
     },[]);
 
     const loadUserAlbum = async () => {
-        let albums = await Api.fetch(`${Url.user}/${user_id}/albums`);
+        let albums = await Api.fetchAlbums(user_id);
         let albumId;
         if (albums.length > 0) {
             albumId = albums[0].id;
@@ -26,7 +27,7 @@ export const UserCard: React.FC <UserPropType> = ({user_id, name, address}) => {
     };
 
     const loadUserPhoto = async (albumId: number) => {
-        let photos = await Api.fetch(`${Url.albums}/${albumId}/photos`);
+        let photos = await Api.fetchPhotos(albumId);
         let imageList = [];
         if (photos.length > 0) {
             imageList = photos.map((photoObj: PhotoPropType) => {
@@ -38,11 +39,11 @@ export const UserCard: React.FC <UserPropType> = ({user_id, name, address}) => {
 
     const renderGallery = () => {
         let helper: JSX.Element[] = [];
-        images.forEach((thumbnailUrl: string) => {
+        images.forEach((thumbnailUrl: string, index) => {
             helper.push(
-                <img src={thumbnailUrl} alt={thumbnailUrl}/>
-            )
-        })
+                <img key={index} src={thumbnailUrl} alt={thumbnailUrl}/>
+            );
+        });
         return helper;
     }
 
@@ -50,13 +51,13 @@ export const UserCard: React.FC <UserPropType> = ({user_id, name, address}) => {
         <UserCardWrapper>
             <UserCardHeader>
                 <UserCardTitle>{name}</UserCardTitle>
+                <div>Street: {address.street}</div>
+                <div>Suite: {address.suite}</div>
+                <div>City: {address.city}</div>
+                <div>Zipcode: {address.zipcode}</div>
+                <div>Geo: {`lat: ${address.geo.lat}, lng: ${address.geo.lng}`}</div>
             </UserCardHeader>
-            <div>Street: {address.street}</div>
-            <div>Suite: {address.suite}</div>
-            <div>City: {address.city}</div>
-            <div>Zipcode: {address.zipcode}</div>
-            <div>Geo: {`${address.geo.lat},${address.geo.lng}`}</div>
-            <div>{images?.length > 0 && renderGallery()}</div>
+            <UserGallery>{images?.length > 0 && renderGallery()}</UserGallery>
         </UserCardWrapper>
     );
 };

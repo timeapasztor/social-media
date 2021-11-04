@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { RouteComponentProps } from "react-router-dom";
-import Api, {Url} from "../api/Api";
+import Api from "../api/Api";
 import {UserCard} from "./Cards/UserCard/UserCard";
 import {UserPropType} from "../types/User";
 
@@ -28,7 +28,7 @@ const UserProfile: React.FC<RouteComponentProps<{ user_id: string }>> = (props) 
     },[]);
 
     const loadUserProfile = async () => {
-        let user = await Api.fetch(`${Url.user}/${userId}`);
+        let user = await Api.fetchUserId(userId);
         let helper: UserPropType = {
             name: user?.name,
             user_id: user?.id,

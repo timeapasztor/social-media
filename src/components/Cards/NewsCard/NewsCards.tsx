@@ -11,25 +11,35 @@ import Modal from "../../Modal/Modal";
 import {ModalButtonWrapper, ModalEntry } from "../../Modal/Modal.css";
 
 export const NewsCard: FC<NewsCardPropTypes> = ({
-title,
-body,
-username,
-userId,
-comments
+    title,
+    body,
+    username,
+    userId,
+    comments
 }) => {
 
     const [showComments, setShowComments] = useState(false);
 
     const renderComments = () => {
         let list:any = [];
-        comments.forEach((comment) => {
+
+        if (comments.length > 0) {
+            comments.forEach((comment, index) => {
+                list.push(
+                    <ModalEntry key={index}>
+                        <li>{comment.email} says:</li>
+                        <p>{comment.body}</p>
+                    </ModalEntry>
+                )
+            })
+        } else {
             list.push(
                 <ModalEntry>
-                    <p>{comment.email} says:</p>
-                    <p>{comment.body}</p>
+                    <p>No comments for this post yet.</p>
                 </ModalEntry>
             )
-        })
+        }
+
         return list;
     }
 
