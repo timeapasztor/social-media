@@ -1,26 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Router, Link, Redirect, Route, Switch } from 'react-router-dom';
+import History from './History';
 import './App.css';
+import NotFound from './components/NotFound';
+import icons from './style/icons';
+import {MenuList, StyledSVGInline, TopHeader, TopNavigation} from "./style/styled-components/resuable.css";
+import Feed from "./components/Feed/Feed";
+import UserProfile from "./components/UserProfile";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div>
+        <Router history={History}>
+          <TopHeader>
+            <TopNavigation>
+              <StyledSVGInline src={icons.newsIcon} />
+              <MenuList>
+                <Link to="/home">Main Page</Link>
+              </MenuList>
+            </TopNavigation>
+          </TopHeader>
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="/home" />
+            </Route>
+              <Route exact path="/home" component={Feed} />
+              <Route exact path="/user_profile/:user_id" component={UserProfile} />
+              <Route component={NotFound} />
+          </Switch>
+        </Router>
+      </div>
   );
-}
+};
 
 export default App;
